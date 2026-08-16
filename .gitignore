@@ -26,4 +26,4 @@ Thumbs.db
 *.log
 
 # Application secrets — IMPORTANT
-backend/src/main/resources/application.yml
+src/main/resources/application.yml
