@@ -41,6 +41,11 @@ public class SeatService {
                 .collect(Collectors.toList());
     }
 
+    public Seat getSeatEntityById(Long seatId) {
+        return seatRepository.findById(seatId)
+                .orElseThrow(() -> new RuntimeException("Seat not found with id: " + seatId));
+    }
+
     private SeatResponse toResponse(Seat seat) {
         return new SeatResponse(
                 seat.getId(),

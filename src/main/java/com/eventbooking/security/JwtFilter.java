@@ -22,6 +22,8 @@ public class JwtFilter extends OncePerRequestFilter {
         this.jwtUtil = jwtUtil;
     }
 
+
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
@@ -29,19 +31,26 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
+        System.out.println("=== JwtFilter running for: " + request.getMethod() + " " + request.getRequestURI());
+        System.out.println("=== Authorization header: " + authHeader);
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
+            boolean valid = jwtUtil.isTokenValid(token);
+            System.out.println("=== Token valid: " + valid);
 
-            if (jwtUtil.isTokenValid(token)) {
+            if (valid) {
                 String email = jwtUtil.extractEmail(token);
+                System.out.println("=== Authenticated as: " + email);
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(email, null, Collections.emptyList());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
+        }else {
+            System.out.println("=== No Bearer token found in header");
         }
 
         filterChain.doFilter(request, response);
     }
-}
+    }
